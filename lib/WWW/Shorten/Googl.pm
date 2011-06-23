@@ -9,41 +9,93 @@ use base qw( WWW::Shorten::generic Exporter );
 our @EXPORT = qw( makeashorterlink makealongerlink );
 our $VERSION = '0.99';
 
-use Carp;
-
-sub makeashorterlink ($)
 {
-    my $url = shift or croak 'No URL passed to makeashorterlink';
-    my $ua = __PACKAGE__->ua();
-    my $api_url = 'http://goo.gl/api/url';
-    my $resp = $ua->post($api_url, [
-        url => $url,
-        source => "PerlAPI",
-    ]);
-    return undef unless $resp->is_success;
-    my $content = $resp->content;
-    return undef if $content =~ /Error/;
-    if ($resp->content =~ m!(\Qhttp://goo.gl/\E\w+)!x) {
-        return $1;
-    }
-    return;
+    # As docs advice you use this module as "use WWW::Shorten 'Googl'"
+    # that module takes care of the importing.. so let's hack this in here
+    no strict 'refs';
+    *{"main::getlinkstats"} = *{"WWW::Shorten::Googl::getlinkstats"};
 }
 
-sub makealongerlink ($)
-{
+use JSON::Any;
+use Carp;
+
+use constant API_URL     => 'https://www.googleapis.com/urlshortener/v1/url';
+use constant HISTORY_URL => 'https://www.googleapis.com/urlshortener/v1/url/history';
+
+sub makeashorterlink ($) {
+    my $url = shift or croak 'No URL passed to makeashorterlink';
+
+    my $json = JSON::Any->new;
+    my $content = $json->objToJson({
+        longUrl => $url,
+    });
+
+    my $res = _request( 'post', API_URL, Content => $content);
+    return $res->{ id } if ( $res->{ id } );
+    return undef;
+}
+
+sub makealongerlink ($) {
     my $url = shift
         or croak 'No goo.gl key / URL passed to makealongerlink';
-    my $ua = __PACKAGE__->ua();
 
     $url = "http://goo.gl/$url"
-    unless $url =~ m!^http://!i;
+        unless $url =~ m!^http://!i;
 
-    my $resp = $ua->get($url);
+    my $res = _request( 'get', API_URL . '?shortUrl=' . $url);
+    return $res->{ longUrl } if ( $res->{ longUrl } );
+    return undef;
+}
 
-    return undef unless $resp->is_redirect;
-    my $location = $resp->header('Location');
-    return $location;
+sub getlinkstats ($) {
+    my $url = shift
+        or croak 'No goo.gl key / URL passed to makealongerlink';
 
+    $url = "http://goo.gl/$url"
+        unless $url =~ m!^http://!i;
+
+    my $res = _request( 'get', API_URL . '?projection=FULL&shortUrl=' . $url);
+    return $res;
+}
+
+sub _request {
+    my ( $method, $url, @args ) = @_;
+
+    my $ua = __PACKAGE__->ua();
+    my %headers = ();
+    if ( $ENV{ GOOGLE_USERNAME } && $ENV{ GOOGLE_PASSWORD } ) {
+        $headers{ Authorization } = _authorize( $ENV{ GOOGLE_USERNAME }, $ENV{ GOOGLE_PASSWORD } );
+    }
+    $headers{ 'Content-Type' } = 'application/json';
+
+    my $resp = $ua->$method( $url, %headers, @args );
+    die "Request failed - " . $resp->status_line unless $resp->is_success;
+
+    my $json = JSON::Any->new;
+    my $obj = $json->jsonToObj( $resp->content );
+    return $obj;
+}
+
+sub _authorize {
+    my ( $username, $password ) = @_;
+
+    eval "require Net::Google::AuthSub";
+    if ( $@ ) {
+        die "You need to install Net::Google::AuthSub to enable URL tracking";
+    }
+
+    my $auth = Net::Google::AuthSub->new(
+        service => 'urlshortener',
+        source  => 'perl/www-shorten-googl',
+    );
+    my $res = $auth->login( $username, $password );
+    unless ( $res and $res->is_success ) {
+        die "Authentication failed - " . $res->error;
+    }
+    unless ( $auth->authorized ) {
+        die "Not authorized";
+    }
+    return 'GoogleLogin auth=' . $auth->auth_token;
 }
 
 1;

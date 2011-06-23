@@ -7,7 +7,7 @@ use warnings;
 
 use base qw( WWW::Shorten::generic Exporter );
 our @EXPORT = qw( makeashorterlink makealongerlink );
-our $VERSION = '0.99';
+our $VERSION = '1.00';
 
 {
     # As docs advice you use this module as "use WWW::Shorten 'Googl'"

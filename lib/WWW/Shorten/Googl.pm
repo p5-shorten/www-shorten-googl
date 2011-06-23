@@ -116,9 +116,12 @@ WWW::Shorten::Googl - Perl interface to goo.gl
 
   $long_url  = makealongerlink($short_url);
 
+  # Note - this function is specific to the Googl shortener
+  $stats = getlinkstats( $short_url );
+
 =head1 DESCRIPTION
 
-A Perl interface to the web site goo.gl. Googl simply maintains
+A Perl interface to the goo.gl URL shortening service. Googl simply maintains
 a database of long URLs, each of which has a unique identifier.
 
 =head1 Functions
@@ -128,15 +131,34 @@ a database of long URLs, each of which has a unique identifier.
 The function C<makeashorterlink> will call the Googl web site passing
 it your long URL and will return the shorter Googl version.
 
+If you provide your Google username and password, the link will be added
+to your list of shortened URLs at L<http://goo.gl/>. See AUTHENTICATION for details.
+
 =head2 makealongerlink
 
 The function C<makealongerlink> does the reverse. C<makealongerlink>
 will accept as an argument either the full goo.gl URL or just the
 goo.gl identifier.
 
-If anything goes wrong, then either function will return C<undef>.
+=head2 getlinkstats
 
-=head2 EXPORT
+Given a goo.gl URL, returns a hash ref with statistics about the URL.
+
+See L<http://code.google.com/apis/urlshortener/v1/reference.html#resource_url>
+for information on which data can be present in this hash ref.
+
+=head1 AUTHENTICATION
+
+If you provide your Google username and password, all shortened URLs will be
+available for viewing at L<http://goo.gl/>
+
+You provide these details by setting the environment variables GOOGLE_USERNAME
+and GOOGLE_PASSWORD, such as
+
+ GOOGLE_USERNAME=your.username@gmail.com
+ GOOGLE_PASSWORD=somethingVerySecret
+
+=head1 EXPORT
 
 makeashorterlink, makealongerlink
 
@@ -150,6 +172,6 @@ Magnus Erixzon <magnus@erixzon.com>
 
 =head1 SEE ALSO
 
-L<WWW::Shorten>, L<http://goo.gl/>
+L<WWW::Shorten>, L<http://goo.gl/>, L<http://code.google.com/apis/urlshortener/v1/reference.html#resource_url>
 
 =cut

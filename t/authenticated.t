@@ -1,9 +1,12 @@
 use Test::More;
+use WWW::Shorten::Googl;
 
-BEGIN { use_ok WWW::Shorten::Googl };
-
-plan skip_all => 'no GOOGLE_USERNAME or GOOGLE_PASSWORD set in the environment'
-    unless $ENV{GOOGLE_USERNAME} and $ENV{GOOGLE_PASSWORD};
+if (! $ENV{GOOGLE_USERNAME} or ! $ENV{GOOGLE_PASSWORD}) {
+    plan skip_all =>
+        'no GOOGLE_USERNAME or GOOGLE_PASSWORD set in the environment';
+    done_testing;
+    exit;
+}
 
 my $url = 'http://search.cpan.org/dist/WWW-Shorten/';
 my $return = makeashorterlink($url);

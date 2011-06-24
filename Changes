@@ -1,5 +1,8 @@
 Revision history for WWW-Shorten-Googl
 
+1.01	2011.06.24
+	Fix unit test
+
 1.00    2011.06.23
         Use the proper Google URL shortening API.
 	Support authentication.

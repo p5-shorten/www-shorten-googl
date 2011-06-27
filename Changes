@@ -1,5 +1,8 @@
 Revision history for WWW-Shorten-Googl
 
+1.02	2011.06.27
+	https protocol is required
+
 1.01	2011.06.24
 	Fix unit test
 

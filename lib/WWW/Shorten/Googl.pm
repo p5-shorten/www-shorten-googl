@@ -22,15 +22,32 @@ use Carp;
 use constant API_URL     => 'https://www.googleapis.com/urlshortener/v1/url';
 use constant HISTORY_URL => 'https://www.googleapis.com/urlshortener/v1/url/history';
 
+# 2015-03-31 adding a DEBUG variable to run in DEBUG mode
+#my $DEBUG = 1;
+my $DEBUG = 0;
+
+# 2015-03-31 - by bennythejudge (github)
+# use an environment variable - GOOGLE_API_KEY - to pass
+# the required Google API Key
 sub makeashorterlink ($) {
     my $url = shift or croak 'No URL passed to makeashorterlink';
+    
+    # check if the API key is available in the environment
+    my $google_api_key;
+    if (  ! $ENV{ GOOGLE_API_KEY } ) {
+      croak 'No GOOGLE_API_KEY environment variable set. Please check the documentation.';
+    }
+    $google_api_key = $ENV{ GOOGLE_API_KEY };
+    ($DEBUG) && print "DEBUG: google_api_key: $google_api_key \n";
 
     my $json = JSON::Any->new;
     my $content = $json->objToJson({
         longUrl => $url,
     });
 
-    my $res = _request( 'post', API_URL, Content => $content);
+    # 2015-03-31 - modifying to pass the Google API Key
+    #my $res = _request( 'post', API_URL, Content => $content);
+    my $res = _request( 'post', API_URL . '?key=' . $google_api_key , Content => $content);
     return $res->{ id } if ( $res->{ id } );
     return undef;
 }

@@ -1,80 +1,76 @@
-#WWW::Shorten::Googl
-##Perl interface to goo.gl
+# NAME
 
-### SYNOPSIS
+WWW::Shorten::Googl - Perl interface to [http://goo.gl/](http://goo.gl/)
 
-    use WWW::Shorten::Googl;
-    use WWW::Shorten 'Googl';
+# SYNOPSIS
 
-    $short_url = makeashorterlink($long_url);
+    use strict;
+    use warnings;
 
-    $long_url  = makealongerlink($short_url);
+    use WWW::Shorten::Googl; # OR
+    # use WWW::Shorten 'Googl';
+
+    # $ENV{GOOGLE_API_KEY} should be set
+
+    my $url = 'http://metacpan.org/pod/WWW::Shorten::Googl';
+    my $short_url = makeashorterlink($url);
+    my $long_url  = makealongerlink($short_url);
 
     # Note - this function is specific to the Googl shortener
-    $stats = getlinkstats( $short_url );
+    my $stats = getlinkstats( $short_url );
 
-### DESCRIPTION
+# DESCRIPTION
 
-A Perl interface to the goo.gl URL shortening service. Googl simply maintains
+A Perl interface to the [http://goo.gl/](http://goo.gl/) URL shortening service. Googl simply maintains
 a database of long URLs, each of which has a unique identifier.
 
-### Functions
+# FUNCTIONS
 
-#### makeashorterlink
+## makeashorterlink
 
-The function C<makeashorterlink> will call the Googl web site passing
+The function `makeashorterlink` will call the Googl web site passing
 it your long URL and will return the shorter Googl version.
 
 If you provide your Google username and password, the link will be added
-to your list of shortened URLs at <http://goo.gl/>. See AUTHENTICATION for details.
+to your list of shortened URLs at [http://goo.gl/](http://goo.gl/).
 
-#### makealongerlink
+See AUTHENTICATION for details.
 
-The function **makealongerlink** does the reverse.
+## makealongerlink
 
-**makealongerlink**
-will accept as an argument either the full goo.gl URL or just the
-goo.gl identifier.
+The function `makealongerlink` does the reverse. `makealongerlink`
+will accept as an argument either the full URL or just the identifier.
 
-#### getlinkstats
+## getlinkstats
 
-Given a goo.gl URL, returns a hash ref with statistics about the URL.
+Given a [http://goo.gl/](http://goo.gl/) URL, returns a hash ref with statistics about the URL.
 
-See L<http://code.google.com/apis/urlshortener/v1/reference.html#resource_url>
+See [http://code.google.com/apis/urlshortener/v1/reference.html#resource\_url](http://code.google.com/apis/urlshortener/v1/reference.html#resource_url)
 for information on which data can be present in this hash ref.
 
-### Google API Key (added March 2015)
-At the time of adding this, it is necessary to provide a API Key to Google to perform the URL shortening and other services.
-Check [here](https://developers.google.com/url-shortener/v1/getting_started#APIKey) for the documentation on how to obtain a Google API key.
-The module expects to find an environment variable GOOGLE_API_KEY containing a valid key.
-If the variable is not found, the module will bail out.
-If the varibale is found but is not valid, the operation will fail and it will be reported (rather brutally) by the WWW::Shorten::generic (UserAgent).
+# AUTHENTICATION
 
-### AUTHENTICATION
+To use this shorten service, you'll first need to setup an
+[API Key](https://developers.google.com/url-shortener/v1/getting_started#APIKey).
 
-If you provide your Google username and password, all shortened URLs will be
-available for viewing at <http://goo.gl/>
+Once you have that key setup, you will need to set the `GOOGLE_API_KEY` environment
+variable to use that key.
 
-You provide these details by setting the environment variables GOOGLE_USERNAME
-and GOOGLE_PASSWORD, such as
+# AUTHOR
 
- GOOGLE_USERNAME=your.username@gmail.com
- GOOGLE_PASSWORD=somethingVerySecret
+Magnus Erixzon <`magnus@erixzon.com`>
 
-### EXPORT
+# CONTRIBUTORS
 
-makeashorterlink, makealongerlink
+- Chase Whitener <`capoeirab@cpan.org`>
 
-###SUPPORT, LICENCE, THANKS and SUCH
+# LICENSE AND COPYRIGHT
 
-See the main <WWW::Shorten> docs.
+Copyright 2004, Magnus Erixzon <`magnus@erixzon.com`>.
 
-###AUTHOR
+This program is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
 
-Magnus Erixzon <magnus@erixzon.com>
+# SEE ALSO
 
-###SEE ALSO
-
-<WWW::Shorten>
-<http://goo.gl/>
-<http://code.google.com/apis/urlshortener/v1/reference.html#resource_url>
+[WWW::Shorten](https://metacpan.org/pod/WWW::Shorten), [http://goo.gl/](http://goo.gl/), [API Reference](https://developers.google.com/url-shortener/v1/getting_started)

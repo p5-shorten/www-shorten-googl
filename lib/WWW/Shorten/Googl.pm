@@ -10,7 +10,7 @@ use URI                  ();
 
 use base qw( WWW::Shorten::generic Exporter );
 our @EXPORT  = qw( makeashorterlink makealongerlink );
-our $VERSION = '1.100';
+our $VERSION = '1.101';
 $VERSION = eval $VERSION;
 use constant API_URL => 'https://www.googleapis.com/urlshortener/v1/url';
 

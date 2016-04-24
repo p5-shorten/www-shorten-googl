@@ -1,7 +1,7 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
-    - 
+    - Testing cleanup seems good. Closes https://rt.cpan.org/Ticket/Display.html?id=104847
 
 1.030_001 2016-04-23
     - Git ignore/attributes, mailmap, perltidy, travis-ci

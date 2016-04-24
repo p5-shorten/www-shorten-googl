@@ -64,10 +64,10 @@
    "provides" : {
       "WWW::Shorten::Googl" : {
          "file" : "lib/WWW/Shorten/Googl.pm",
-         "version" : "1.030_002"
+         "version" : "1.100"
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "web" : "https://github.com/p5-shorten/www-shorten-googl/issues"
@@ -79,7 +79,7 @@
          "web" : "https://github.com/p5-shorten/www-shorten-googl"
       }
    },
-   "version" : "1.030_002",
+   "version" : "1.100",
    "x_contributors" : [
       "bennythejudge <logube@gmail.com>",
       "Chase Whitener <capoeirab@cpan.org>",
